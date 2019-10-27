@@ -13,9 +13,10 @@ var cors = require('cors');
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 
-var client_id = 'CLIENT_ID'; // Your client id
-var client_secret = 'CLIENT_SECRET'; // Your secret
-var redirect_uri = 'REDIRECT_URI'; // Your redirect uri
+var client_id = '5f646c7418d94adfa0848d038cf2643c'; // Your client id
+var client_secret = '5dc8d8d291de4fad8855b3a1856e9744'; // Your secret
+var redirect_uri = 'http://localhost:8888/callback/'; // Your redirect uri
+var base_url = 'https://api.spotify.com/v1'
 
 /**
  * Generates a random string containing numbers and letters
@@ -46,7 +47,7 @@ app.get('/login', function(req, res) {
   res.cookie(stateKey, state);
 
   // your application requests authorization
-  var scope = 'user-read-private user-read-email';
+  var scope = 'user-read-private user-read-email playlist-read-private';
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       response_type: 'code',
@@ -93,7 +94,7 @@ app.get('/callback', function(req, res) {
             refresh_token = body.refresh_token;
 
         var options = {
-          url: 'https://api.spotify.com/v1/me',
+          url: base_url + '/me',
           headers: { 'Authorization': 'Bearer ' + access_token },
           json: true
         };
@@ -102,6 +103,23 @@ app.get('/callback', function(req, res) {
         request.get(options, function(error, response, body) {
           console.log(body);
         });
+
+        var playlistList = {
+          url: base_url + '/me/playlists',
+          headers: { 'Authorization': 'Bearer ' + access_token }
+        };
+        request.get(playlistList, function(error, response, body) {
+          // const box = document.createElement('p')
+          // box.textContent = body
+          var playlists=JSON.parse(body)
+
+          playlists.items.forEach(playlist => {
+            console.log(playlist.name)
+          });
+        });
+
+        // theBody = document.body
+        // theBody.appendChild(box)
 
         // we can also pass the token to the browser to make requests from there
         res.redirect('/#' +
