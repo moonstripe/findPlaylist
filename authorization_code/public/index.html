@@ -32,8 +32,9 @@
       <div id="playlist-finder">
         <form id=songQuery autocomplete="off">
           <br>
-          Enter a song title: <input type='text' name="title">
-          <input type="button" value="find my playlist!" onclick="findIt(this.form)">
+          Enter a song title: <input type='text' id="thetitle">
+          <input type="button" value="find my playlist!" onclick="findIt()">
+          <div id="alert" style="color: red"></div>
         </form>
       </div>
       <div id='playlists'>
@@ -42,11 +43,12 @@
     </div>
 
     <script>
-      function findIt(resp) {
-        const box = document.createElement("p")
-        box.textContent = resp
-        const pf = document.getElementById("playlist-finder")
-        pf.appendChild(box)
+      function findIt() {
+        // const box = document.createElement("p")
+        // box.textContent = resp.inputbox.value
+        // document.getElementById("playlist-finder").appendChild(box);
+        var someVar = document.getElementById('thetitle').value
+        alert("AY YO " + someVar);
       }
     </script>
 
