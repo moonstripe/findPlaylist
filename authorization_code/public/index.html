@@ -49,8 +49,25 @@
             // document.getElementById("playlist-finder").appendChild(box);
             var someVar = document.getElementById('thetitle').value
             console.log(someVar)
+            var batch = 0
+            var numPlaylists = 0
+            // do {
+            //   $.ajax({
+            //   url: base_url + 'me/playlists',
+            //   headers: {'Authorization': 'Bearer ' + access_token
+            //     }, success: function(response) {
+            //     //var plNames = JSON.parse(response)
+            //       plBatch = response.items;
+            //       numPlaylists = plBatch.length
+            //       plBatch.forEach(pl =>  {
+            //         console.log(pl.name)
+            //       })
+            //       batch++;
+            //     }
+            //   })
+            // } while (numPlaylists == 50)
             $.ajax({
-              url: base_url + 'me/playlists',
+              url: base_url + 'me/playlists'+'?limit=50',
               headers: {'Authorization': 'Bearer ' + access_token
             }, success: function(response) {
                 //var plNames = JSON.parse(response)
