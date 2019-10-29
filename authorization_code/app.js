@@ -114,7 +114,7 @@ app.get('/callback', function(req, res) {
           var playlists=JSON.parse(body)
 
           playlists.items.forEach(playlist => {
-            console.log(playlist.name)
+            // console.log(playlist.name)
           });
         });
 

@@ -4,7 +4,7 @@
     <title>Example of the Authorization Code flow with Spotify</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <style type="text/css">
-      #login, #loggedin, #playlist-finder, #playlists {
+      #login, #loggedin, #playlist-finder, #playlists{
         display: none;
       }
       .text-overflow {
@@ -33,7 +33,7 @@
         <form id=songQuery autocomplete="off">
           <br>
           Enter a song title: <input type='text' id="thetitle">
-          <input type="button" value="find my playlist!" onclick="findIt()">
+          <!-- <input type="button" value="find my playlist!" onclick="findIt()"> -->
           <div id="alert" style="color: red"></div>
         </form>
       </div>
@@ -43,7 +43,7 @@
     </div>
 
     <script>
-      function findIt() {
+      function findUt() {
         // const box = document.createElement("p")
         // box.textContent = resp.inputbox.value
         // document.getElementById("playlist-finder").appendChild(box);
@@ -85,8 +85,9 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script>
+      var base_url = 'https://api.spotify.com/v1/';
       (function() {
-
+        
         /**
          * Obtains parameters from the hash of the URL
          * @return Object
@@ -139,11 +140,34 @@
                 }
             });
 
+          var input  = document.createElement("input");
+          input.type = "button"
+          input.value = "find my playlist!"
+          input.onclick=findIt();
+          document.getElementById('songQuery').appendChild(input);
+
  
           } else {
               // render initial screen
               $('#login').show();
               $('#loggedin').hide();
+          }
+
+          function findIt() {
+            // const box = document.createElement("p")
+            // box.textContent = resp.inputbox.value
+            // document.getElementById("playlist-finder").appendChild(box);
+            var someVar = document.getElementById('thetitle').value
+            $.ajax({
+              url: base_url + 'me/playlists',
+              headers: {'Authorization': 'Bearer ' + access_token
+            }, success: function(response) {
+                //var plNames = JSON.parse(response)
+                response.items.forEach(pl =>  {
+                  console.log(pl.name)
+                })
+              }
+            })
           }
 
           document.getElementById('obtain-new-token').addEventListener('click', function() {
@@ -161,7 +185,12 @@
             });
           }, false);
 
+
+
         }
+
+
+
       })();
     </script>
   </body>
