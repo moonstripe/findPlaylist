@@ -33,7 +33,7 @@
         <form id=songQuery autocomplete="off">
           <br>
           Enter a song title: <input type='text' id="thetitle">
-          <!-- <input type="button" value="find my playlist!" onclick="findIt()"> -->
+          <input type="button" value="find my playlist!" onclick="findIt()">
           <div id="alert" style="color: red"></div>
         </form>
       </div>
@@ -43,13 +43,23 @@
     </div>
 
     <script>
-      function findUt() {
-        // const box = document.createElement("p")
-        // box.textContent = resp.inputbox.value
-        // document.getElementById("playlist-finder").appendChild(box);
-        var someVar = document.getElementById('thetitle').value
-        alert("AY YO " + someVar);
-      }
+                function findIt() {
+            // const box = document.createElement("p")
+            // box.textContent = resp.inputbox.value
+            // document.getElementById("playlist-finder").appendChild(box);
+            var someVar = document.getElementById('thetitle').value
+            console.log(someVar)
+            $.ajax({
+              url: base_url + 'me/playlists',
+              headers: {'Authorization': 'Bearer ' + access_token
+            }, success: function(response) {
+                //var plNames = JSON.parse(response)
+                response.items.forEach(pl =>  {
+                  console.log(pl.name)
+                })
+              }
+            })
+          }
     </script>
 
     <script id="user-profile-template" type="text/x-handlebars-template">
@@ -112,8 +122,8 @@
 
         var params = getHashParams();
 
-        var access_token = params.access_token,
-            refresh_token = params.refresh_token,
+         access_token = params.access_token
+             var refresh_token = params.refresh_token,
             error = params.error;
 
         if (error) {
@@ -140,11 +150,12 @@
                 }
             });
 
-          var input  = document.createElement("input");
-          input.type = "button"
-          input.value = "find my playlist!"
-          input.onclick=findIt();
-          document.getElementById('songQuery').appendChild(input);
+          // var input  = document.createElement("input");
+          // input.type = "button"
+          // input.value = "foooooond my playlist!"
+          // debugger;
+          // input.onclick = findIt();
+          // document.getElementById('songQuery').appendChild(input);
 
  
           } else {
@@ -153,22 +164,7 @@
               $('#loggedin').hide();
           }
 
-          function findIt() {
-            // const box = document.createElement("p")
-            // box.textContent = resp.inputbox.value
-            // document.getElementById("playlist-finder").appendChild(box);
-            var someVar = document.getElementById('thetitle').value
-            $.ajax({
-              url: base_url + 'me/playlists',
-              headers: {'Authorization': 'Bearer ' + access_token
-            }, success: function(response) {
-                //var plNames = JSON.parse(response)
-                response.items.forEach(pl =>  {
-                  console.log(pl.name)
-                })
-              }
-            })
-          }
+
 
           document.getElementById('obtain-new-token').addEventListener('click', function() {
             $.ajax({
