@@ -43,7 +43,7 @@
     </div>
 
     <script>
-                function findIt() {
+      function findIt() {
             // const box = document.createElement("p")
             // box.textContent = resp.inputbox.value
             // document.getElementById("playlist-finder").appendChild(box);
@@ -72,11 +72,13 @@
             }, success: function(response) {
                 //var plNames = JSON.parse(response)
                 response.items.forEach(pl =>  {
-                  console.log(pl.name)
-                })
-              }
-            })
-          } 
+                  const box = document.createElement("p")
+                  box.textContent = pl.name;
+                  document.getElementById("playlists").appendChild(box)})
+                $('#playlists').show();
+            }
+          })
+        } 
     </script>
 
     <script id="user-profile-template" type="text/x-handlebars-template">
