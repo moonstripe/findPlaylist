@@ -17,6 +17,12 @@ var client_id = '6450a42517584193831cbdc7616406ec'; // Your client id
 var client_secret = '4e57ce393d4e4a0ba110fd8c035749aa'; // Your secret
 var redirect_uri = 'http://localhost:8888/shabbadoo'; // Your redirect uri
 
+//TODO: make .env work so im not revealing stuff
+// require('dotenv').config();
+// var client_id = process.env.ID; // Your client id
+// var client_secret = process.env.SECRET; // Your secret
+// var redirect_uri = process.env.REDIRECT; // Your redirect uri
+
 /**
  * Generates a random string containing numbers and letters
  * @param  {number} length The length of the string
@@ -107,19 +113,38 @@ app.get('/shabbadoo', function(req, res) {
         var playlists = [];
 
         var optionsGet = {
-          url: 'https://api.spotify.com/v1/me/playlists?limit=50',
+          url: 'https://api.spotify.com/v1/me/playlists?limit=1',
           headers: { 'Authorization': 'Bearer ' + access_token},
           json: true
         };
         
         var playlistsToTracks = {}
 
-        request.get(optionsGet, function(error, response, body) {
+        request.get(optionsGet, async function(error, response, body) {
           for(let i = 0; i<body.items.length; i++) {
-            var playlist = body.items[i]
-            playlistsToTracks[playlist.name] = playlist.tracks;
+            var playlist = body.items[i];
+
+            console.log("*********************************************");
+            var tracks = [];
+            var playlistOptions = {
+              url: playlist.tracks.href,
+              headers: { 'Authorization': 'Bearer ' + access_token},
+              json: true
+            };
+            await request.get(playlistOptions, async function(error, response, body) {
+              for(const item of body.items) {
+                var track = await item.track.name;
+                console.log(track + " track")
+                await tracks.push(track);
+                // console.log(tracks);
+              }
+              
+              console.log(tracks + " mank");
+            });
+            console.log(tracks + " should print after tracklist?");
+            playlistsToTracks[playlist.name] = tracks;
             //TODO: get tracks from tracks API
-          }
+          };
           // TODO: loop to get more playlists, can use the next field in the playlists req
           console.log(playlistsToTracks);
         })
