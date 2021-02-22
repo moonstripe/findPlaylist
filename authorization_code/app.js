@@ -13,10 +13,9 @@ var cors = require('cors');
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 
-var client_id = '5f646c7418d94adfa0848d038cf2643c'; // Your client id
-var client_secret = '5dc8d8d291de4fad8855b3a1856e9744'; // Your secret
-var redirect_uri = 'http://localhost:8888/callback/'; // Your redirect uri
-var base_url = 'https://api.spotify.com/v1'
+var client_id = '6450a42517584193831cbdc7616406ec'; // Your client id
+var client_secret = '4e57ce393d4e4a0ba110fd8c035749aa'; // Your secret
+var redirect_uri = 'http://localhost:8888/shabbadoo'; // Your redirect uri
 
 /**
  * Generates a random string containing numbers and letters
@@ -47,19 +46,19 @@ app.get('/login', function(req, res) {
   res.cookie(stateKey, state);
 
   // your application requests authorization
-  var scope = 'user-read-private user-read-email playlist-read-private';
+  var scope = 'user-read-private user-read-email';
   res.redirect('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       response_type: 'code',
       client_id: client_id,
       scope: scope,
       redirect_uri: redirect_uri,
-      state: state,
-      show_dialog: true
+      state: state
     }));
 });
 
-app.get('/callback', function(req, res) {
+app.get('/shabbadoo', function(req, res) {
+  //this redirect URI is set in app settings on developer.spotify.com
 
   // your application requests refresh and access tokens
   // after checking the state parameter
@@ -95,7 +94,7 @@ app.get('/callback', function(req, res) {
             refresh_token = body.refresh_token;
 
         var options = {
-          url: base_url + '/me',
+          url: 'https://api.spotify.com/v1/me',
           headers: { 'Authorization': 'Bearer ' + access_token },
           json: true
         };
@@ -105,22 +104,25 @@ app.get('/callback', function(req, res) {
           console.log(body);
         });
 
-        var playlistList = {
-          url: base_url + '/me/playlists',
-          headers: { 'Authorization': 'Bearer ' + access_token }
+        var playlists = [];
+
+        var optionsGet = {
+          url: 'https://api.spotify.com/v1/me/playlists?limit=50',
+          headers: { 'Authorization': 'Bearer ' + access_token},
+          json: true
         };
-        request.get(playlistList, function(error, response, body) {
-          // const box = document.createElement('p')
-          // box.textContent = body
-          var playlists=JSON.parse(body)
+        
+        var playlistsToTracks = {}
 
-          playlists.items.forEach(playlist => {
-            // console.log(playlist.name)
-          });
-        });
-
-        // theBody = document.body
-        // theBody.appendChild(box)
+        request.get(optionsGet, function(error, response, body) {
+          for(let i = 0; i<body.items.length; i++) {
+            var playlist = body.items[i]
+            playlistsToTracks[playlist.name] = playlist.tracks;
+            //TODO: get tracks from tracks API
+          }
+          // TODO: loop to get more playlists, can use the next field in the playlists req
+          console.log(playlistsToTracks);
+        })
 
         // we can also pass the token to the browser to make requests from there
         res.redirect('/#' +

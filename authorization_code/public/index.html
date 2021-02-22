@@ -1,10 +1,10 @@
 <!doctype html>
 <html>
   <head>
-    <title>Example of the Authorization Code flow with Spotify</title>
+    <title>Hello! Login to use findPlaylist</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <style type="text/css">
-      #login, #loggedin, #playlist-finder, #playlists{
+      #login, #loggedin {
         display: none;
       }
       .text-overflow {
@@ -29,60 +29,10 @@
         </div>
         <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button>
       </div>
-      <div id="playlist-finder">
-        <form id=songQuery autocomplete="off">
-          <br>
-          Enter a song title: <input type='text' id="thetitle">
-          <input type="button" value="find my playlist!" onclick="findIt()">
-          <div id="alert" style="color: red"></div>
-        </form>
-      </div>
-      <div id='playlists'>
-        
-      </div>
     </div>
 
-    <script>
-      function findIt() {
-            // const box = document.createElement("p")
-            // box.textContent = resp.inputbox.value
-            // document.getElementById("playlist-finder").appendChild(box);
-            var someVar = document.getElementById('thetitle').value
-            console.log(someVar)
-            var batch = 0
-            var numPlaylists = 0
-            // do {
-            //   $.ajax({
-            //   url: base_url + 'me/playlists',
-            //   headers: {'Authorization': 'Bearer ' + access_token
-            //     }, success: function(response) {
-            //     //var plNames = JSON.parse(response)
-            //       plBatch = response.items;
-            //       numPlaylists = plBatch.length
-            //       plBatch.forEach(pl =>  {
-            //         console.log(pl.name)
-            //       })
-            //       batch++;
-            //     }
-            //   })
-            // } while (numPlaylists == 50)
-            $.ajax({
-              url: base_url + 'me/playlists'+'?limit=50',
-              headers: {'Authorization': 'Bearer ' + access_token
-            }, success: function(response) {
-                //var plNames = JSON.parse(response)
-                response.items.forEach(pl =>  {
-                  const box = document.createElement("p")
-                  box.textContent = pl.name;
-                  document.getElementById("playlists").appendChild(box)})
-                $('#playlists').show();
-            }
-          })
-        } 
-    </script>
-
     <script id="user-profile-template" type="text/x-handlebars-template">
-      <h1>Logged in as {{display_name}}</h1>
+      <h1>Welcome {{display_name}}!</h1>
       <div class="media">
         <div class="pull-left">
           <img class="media-object" width="150" src="{{images.0.url}}" />
@@ -94,17 +44,25 @@
             <dt>Email</dt><dd>{{email}}</dd>
             <dt>Spotify URI</dt><dd><a href="{{external_urls.spotify}}">{{external_urls.spotify}}</a></dd>
             <dt>Link</dt><dd><a href="{{href}}">{{href}}</a></dd>
-            <dt>Profile Image</dt><dd class="clearfix"><a href="{{images.0.url}}">{{images.0.url}}</a></dd>
+            <!-- <dt>Profile Image</dt><dd class="clearfix"><a href="{{images.0.url}}">{{images.0.url}}</a></dd> -->
             <dt>Country</dt><dd>{{country}}</dd>
           </dl>
         </div>
-        <div>
-        </div>
+        search for a song: <input type="text" id="query" placeholder="song name">
+        <button type="button" onclick="searchPlaylists">find playlists!</button>
       </div>
     </script>
 
+    <script>
+      function myFunction() {
+        var song = document.getElementById("query");
+
+
+      }
+    </script>
+
     <script id="oauth-template" type="text/x-handlebars-template">
-      <h2>oAuth info</h2>
+      <h2>monks</h2>
       <dl class="dl-horizontal">
         <dt>Access token</dt><dd class="text-overflow">{{access_token}}</dd>
         <dt>Refresh token</dt><dd class="text-overflow">{{refresh_token}}</dd>
@@ -114,9 +72,8 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script>
-      var base_url = 'https://api.spotify.com/v1/';
       (function() {
-        
+
         /**
          * Obtains parameters from the hash of the URL
          * @return Object
@@ -141,8 +98,8 @@
 
         var params = getHashParams();
 
-         access_token = params.access_token
-             var refresh_token = params.refresh_token,
+        var access_token = params.access_token,
+            refresh_token = params.refresh_token,
             error = params.error;
 
         if (error) {
@@ -165,25 +122,13 @@
 
                   $('#login').hide();
                   $('#loggedin').show();
-                  $('#playlist-finder').show();
                 }
             });
-
-          // var input  = document.createElement("input");
-          // input.type = "button"
-          // input.value = "foooooond my playlist!"
-          // debugger;
-          // input.onclick = findIt();
-          // document.getElementById('songQuery').appendChild(input);
-
- 
           } else {
               // render initial screen
               $('#login').show();
               $('#loggedin').hide();
           }
-
-
 
           document.getElementById('obtain-new-token').addEventListener('click', function() {
             $.ajax({
@@ -199,13 +144,7 @@
               });
             });
           }, false);
-
-
-
         }
-
-
-
       })();
     </script>
   </body>
